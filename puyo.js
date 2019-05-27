@@ -60,5 +60,10 @@ class Puyo {
     
 
     Collision() {
+        for (var y = 0; y < collisionHeight; y++) {
+            for (var x = 0; x < collisionLength; x++) {
+                //if (this.)
+            }
+        }
     }
 }

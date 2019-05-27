@@ -22,12 +22,7 @@ function setup() {
       y: 12
   };
   gridSize = 32;
-  //for (var i = 0; i < grid.x; i++) {
-  //    collisionMap.push([i, grid.y]);
-  //}
   initalizeCollisions(grid.x + 2, grid.y + 1);
-  debugCollisions();
-
 }
 
 function draw() {
