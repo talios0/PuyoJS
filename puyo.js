@@ -7,7 +7,7 @@ class Puyo {
         this.x = 0;
         this.y = 0;
         if (this.pos == 1) {
-            this.y-=gridSize;
+            this.y -= gridSize;
         }
         // Size
         this.sizeX = 32;
@@ -45,13 +45,13 @@ class Puyo {
         //fill(this.bottomColor);
         //rect(0, this.sizeY, this.sizeX, this.sizeY);
         fill(0);
-        rect(0,0,5,5);
+        rect(0, 0, 5, 5);
         pop();
     }
 
     Gravity() {
-        if (!this.dropped) {
-            this.y += this.sizeY / 32;
+        if (!this.collision) {
+            this.y += (this.sizeY / 32) * this.speed;
         }
 
     }
@@ -59,9 +59,16 @@ class Puyo {
 
     Collision() {
         // Looking for pre-emptive collision (one grid space before)
-        if (collisionMap[collisionLength * (round(this.y/gridSize))  + (round(this.x/gridSize) +1)] == 1) {
-            console.log("Collision at: [" + (round(this.x/gridSize) + 1) + "," + round(this.y/gridSize) + "]");
+        if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] == 1) {
+            //console.log("Collision at: [" + (round(this.x / gridSize) + 1) + "," + round(this.y / gridSize) + "]");
             this.collision = true;
+        }
+    }
+
+    AddToCollisionMap() {
+        if (this.collision) {
+            //console.log("["+round(this.x/gridSize) + "," + round(this.y/gridSize) +"]");
+            collisionMap[(round(this.y/gridSize) - 1)*collisionLength + (round(this.x/gridSize) + 1)] = 1;
         }
     }
 }

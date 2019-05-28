@@ -1,46 +1,49 @@
-var puyo = [];
+var inactivePuyos = [];
 var collisionMap = [];
 var grid;
 var gridSize;
 new p5();
 var possibleColors = [];
-var drawing = true;
+var drawing = false;
 
 var activePuyo;
 
 function setup() {
-  createCanvas(600, 800);
-  rectMode(CENTER);
+    createCanvas(600, 800);
+    rectMode(CENTER);
 
-  possibleColors.push(color(255,0,0));
-  possibleColors.push(color(0,255,0));
-  possibleColors.push(color(0,0,255));
-  possibleColors.push(color(255,255,0));
-  possibleColors.push(color(196,64,219));
+    possibleColors.push(color(255, 0, 0));
+    possibleColors.push(color(0, 255, 0));
+    possibleColors.push(color(0, 0, 255));
+    possibleColors.push(color(255, 255, 0));
+    possibleColors.push(color(196, 64, 219));
 
-  puyo.push(new Puyo(1, possibleColors));
-  grid = {
-      x: 6,
-      y: 12
-  };
-  gridSize = 32;
-  initalizeCollisions(grid.x + 2, grid.y + 1);
+    grid = {
+        x: 6,
+        y: 12
+    };
+    gridSize = 32;
+    initalizeCollisions(grid.x + 2, grid.y + 1);
 
-  // TEST
-  activePuyo = new PuyoContainer();
+    // TEST
+    activePuyo = new PuyoContainer();
 }
 
 function draw() {
-    translate(gridSize,gridSize);
-  background(255);
-  drawGrid();
-  activePuyo.Update();
-  //puyo[0].Collision();
-  //puyo[0].Draw();
-  //puyo[0].Gravity();
-  if (drawing) {
-    drawCollisions();
-  }
+    translate(gridSize, gridSize);
+    background(255);
+    drawGrid();
+    activePuyo.Update();
+    if (activePuyo.dropped) {
+        inactivePuyos.push(activePuyo);
+        activePuyo = new PuyoContainer();
+    }
+    for (var i = 0; i < inactivePuyos.length; i++) {
+        inactivePuyos[i].Update();
+    }
+    if (drawing) {
+        drawCollisions();
+    }
 }
 
 function drawGrid() {
@@ -62,7 +65,7 @@ function drawGrid() {
                 col = 0;
             }
             noStroke();
-            rect(x*gridSize + gridSize/2, y*gridSize + gridSize/2, gridSize, gridSize);
+            rect(x * gridSize + gridSize / 2, y * gridSize + gridSize / 2, gridSize, gridSize);
         }
     }
 }
@@ -94,7 +97,7 @@ function keyPressed() {
 }
 
 function ChooseColor() {
-    console.log(possibleColors[random(0,possibleColors.length)]);
-    return color (0);
+    console.log(possibleColors[random(0, possibleColors.length)]);
+    return color(0);
 
 }
