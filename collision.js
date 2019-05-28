@@ -30,7 +30,7 @@ function initalizeCollisions(length, height) {
 
             line += collisionMap[collisionLength*y + x] + " ";
         }
-        console.log(line + ":" + y);
+        //console.log(line + ":" + y);
     }
 }
 

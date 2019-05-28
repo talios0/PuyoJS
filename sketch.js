@@ -6,6 +6,8 @@ new p5();
 var possibleColors = [];
 var drawing = true;
 
+var activePuyo;
+
 function setup() {
   createCanvas(600, 800);
   rectMode(CENTER);
@@ -14,7 +16,7 @@ function setup() {
   possibleColors.push(color(0,255,0));
   possibleColors.push(color(0,0,255));
   possibleColors.push(color(255,255,0));
-  possibleColors.push(color(255,0,255));
+  possibleColors.push(color(196,64,219));
 
   puyo.push(new Puyo(1, possibleColors));
   grid = {
@@ -23,15 +25,19 @@ function setup() {
   };
   gridSize = 32;
   initalizeCollisions(grid.x + 2, grid.y + 1);
+
+  // TEST
+  activePuyo = new PuyoContainer();
 }
 
 function draw() {
     translate(gridSize,gridSize);
   background(255);
   drawGrid();
-  puyo[0].Collision();
-  puyo[0].Draw();
-  puyo[0].Gravity();
+  activePuyo.Update();
+  //puyo[0].Collision();
+  //puyo[0].Draw();
+  //puyo[0].Gravity();
   if (drawing) {
     drawCollisions();
   }
@@ -80,10 +86,10 @@ function keyPressed() {
     }
 
     if (rotation != 0) {
-        puyo[0].AddRotation(rotation);
+        activePuyo.AddRotation(rotation);
     }
     if (movement != 0) {
-        puyo[0].Move(movement);
+        activePuyo.Move(movement);
     }
 }
 
