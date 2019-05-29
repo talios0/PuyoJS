@@ -89,7 +89,7 @@ function keyPressed() {
     }
 
     if (rotation != 0) {
-        activePuyo.AddRotation(rotation);
+        activePuyo.AddRotation(rotation, false);
     }
     if (movement != 0) {
         activePuyo.Move(movement);
