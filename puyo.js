@@ -4,8 +4,8 @@ class Puyo {
         this.pos = pos;
 
         // Position
-        this.x = 0;
-        this.y = 0;
+        this.x = round((grid.x/2 -1)* gridSize) ;
+        this.y = -gridSize;
         if (this.pos == 1) {
             this.y -= gridSize;
         }
@@ -40,10 +40,6 @@ class Puyo {
         rotate(this.rotation);
         fill(this.color);
         rect(0, 0, this.sizeX, this.sizeY);
-        //fill(this.bottomColor);
-        //rect(0, this.sizeY, this.sizeX, this.sizeY);
-        fill(0);
-        rect(0, 0, 5, 5);
         pop();
     }
 
