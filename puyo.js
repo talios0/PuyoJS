@@ -28,8 +28,6 @@ class Puyo {
             if ((this.rotation == 0 && dir == -1) || (this.rotation == -PI && dir == 1)) {
                 return;
             }
-        } else if (this.x / gridSize == 6) {
-            console.log("TRUER THAN EVER BEFORE");
         }
         this.rotation += -HALF_PI * dir;
         this.rotation %= 2 * PI;
@@ -60,8 +58,10 @@ class Puyo {
     Collision() {
         // Looking for pre-emptive collision (one grid space before)
         if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] == 1) {
-            //console.log("Collision at: [" + (round(this.x / gridSize) + 1) + "," + round(this.y / gridSize) + "]");
             this.collision = true;
+        } else {
+            this.collision = false;
+            this.RemoveFromCollisionMap();
         }
     }
 
@@ -69,6 +69,12 @@ class Puyo {
         if (this.collision) {
             //console.log("["+round(this.x/gridSize) + "," + round(this.y/gridSize) +"]");
             collisionMap[(round(this.y/gridSize) - 1)*collisionLength + (round(this.x/gridSize) + 1)] = 1;
+        }
+    }
+
+    RemoveFromCollisionMap() {
+        if (!this.collision) {
+            collisionMap[(round(this.y/gridSize) - 1)*collisionLength + (round(this.x/gridSize) + 1)] = 0;
         }
     }
 }

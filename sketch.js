@@ -34,7 +34,7 @@ function draw() {
     background(255);
     drawGrid();
     activePuyo.Update();
-    if (activePuyo.dropped) {
+    if (activePuyo.collision) {
         inactivePuyos.push(activePuyo);
         activePuyo = new PuyoContainer();
     }

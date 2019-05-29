@@ -5,13 +5,18 @@ class PuyoContainer {
         this.puyos = [];
         this.rotation = 0;
         this.dropped = false;
+        this.collision = false;
         for (var i = 0; i < this.chainLength; i++) {
             this.puyos.push(new Puyo(this, this.speed, possibleColors, i));
         }
     }
 
     Update() {
+        this.collision = true;
         for (var i = 0; i < this.puyos.length; i++) {
+            if (this.puyos[i].collision == false) {
+                this.collision = false;
+            }
             this.puyos[i].Collision();
             if (this.puyos[i].collision && !this.dropped) {
                 this.dropped = true;
