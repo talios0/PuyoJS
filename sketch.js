@@ -25,6 +25,7 @@ function setup() {
     gridSize = 32;
     initalizeCollisions(grid.x + 2, grid.y + 1);
 
+
     // TEST
     activePuyo = new PuyoContainer();
 }
@@ -94,10 +95,4 @@ function keyPressed() {
     if (movement != 0) {
         activePuyo.Move(movement);
     }
-}
-
-function ChooseColor() {
-    console.log(possibleColors[random(0, possibleColors.length)]);
-    return color(0);
-
 }
