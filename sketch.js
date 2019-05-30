@@ -30,7 +30,6 @@ function setup() {
             puyos.push(new PuyoMap(x,y, null, true));
         }
     }
-    console.log(puyos.length);
     // TEST
     activePuyo = new PuyoContainer();
 }

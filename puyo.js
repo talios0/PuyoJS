@@ -88,6 +88,7 @@ class Puyo {
                 puyos[grid.x*y + x] = this.puyoMap;
                 this.inArray = true;
             }
+            this.RemoveFromCollisionMap();
         }
     }
 
@@ -97,10 +98,12 @@ class Puyo {
             if (this.puyoMap != null) {
                 for (var i = 0; i < puyos.length; i++) {
                     if (puyos[i].puyo == this) {
+                        puyos[i].default = true;
                         puyos[i].puyo = null;
+                        console.log("found");
+                        break;
                     }
                 }
-                //puyos.splice(puyos[puyos.find(this.puyoMap)]);
                 this.inArray = false;
             }
         }
