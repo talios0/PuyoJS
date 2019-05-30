@@ -41,7 +41,6 @@ function drawCollisions() {
     for (var y = 0; y < collisionHeight; y++) {
         for (var x = 0; x < collisionLength; x++) {
             if (collisionMap[collisionLength*y + x] == 1) {
-                //console.log("["+x+","+y+"]");
                 rect((x-1)* gridSize + gridSize/2,(y)*gridSize + gridSize/2, gridSize, gridSize);
             }
         }

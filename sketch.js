@@ -25,7 +25,12 @@ function setup() {
     gridSize = 32;
     initalizeCollisions(grid.x + 2, grid.y + 1);
 
-
+    for (var y = 0; y < grid.y; y++) {
+        for (var x = 0; x < grid.x; x++) {
+            puyos.push(new PuyoMap(x,y, null, true));
+        }
+    }
+    console.log(puyos.length);
     // TEST
     activePuyo = new PuyoContainer();
 }

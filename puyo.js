@@ -15,7 +15,13 @@ class Puyo {
         // Speed
         this.speed = _speed;
         // Color
-        this.color = random(colors)
+        this.color = random(colors);
+        for (var i = 0; i < colors.length; i++) {
+            if (this.color == colors[i]) {
+                this.type = i;
+                break;
+            }
+        }
         // Other
         this.dropped = false;
         this.rotation = 0;
@@ -77,7 +83,9 @@ class Puyo {
             else if (this.color == possibleColors[4]) color = 5;
             if (!this.inArray) {
                 this.puyoMap = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this)
-                puyos.push(this.puyoMap);
+                var x = round(this.x/gridSize + 1) - 1;
+                var y = round(this.y/gridSize) - 1;
+                puyos[grid.x*y + x] = this.puyoMap;
                 this.inArray = true;
             }
         }
@@ -87,7 +95,11 @@ class Puyo {
         if (!this.collision) {
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
             if (this.puyoMap != null) {
-                console.log(puyos.find(this.puyoMap));
+                for (var i = 0; i < puyos.length; i++) {
+                    if (puyos[i].puyo == this) {
+                        puyos[i].puyo = null;
+                    }
+                }
                 //puyos.splice(puyos[puyos.find(this.puyoMap)]);
                 this.inArray = false;
             }
