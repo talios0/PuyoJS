@@ -42,9 +42,17 @@ function draw() {
     if (activePuyo.collision) {
         inactivePuyos.push(activePuyo);
         activePuyo = new PuyoContainer();
+
     }
     for (var i = 0; i < inactivePuyos.length; i++) {
         inactivePuyos[i].Update();
+    }
+    for (var y = 0; y < grid.y; y++) {
+        for (var x = 0; x < grid.x; x++) {
+            if (!puyos[grid.x*y + x].default) {
+                findMatch(puyos[grid.x*y + x]);
+            }
+        }
     }
     if (drawing) {
         drawCollisions();

@@ -16,6 +16,7 @@ class Puyo {
         this.speed = _speed;
         // Color
         this.color = random(colors);
+        this.type = -1;
         for (var i = 0; i < colors.length; i++) {
             if (this.color == colors[i]) {
                 this.type = i;
