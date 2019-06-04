@@ -9,7 +9,7 @@ class Puyo {
         if (this.pos == 1) {
             this.y -= gridSize;
         }
-        // Size
+        // Sizes
         this.sizeX = 32;
         this.sizeY = 32;
         // Speed
@@ -23,13 +23,16 @@ class Puyo {
                 break;
             }
         }
+        // Match
+        this.matcher = new Matcher(this);
+
         // Other
         this.dropped = false;
         this.rotation = 0;
         this.collision = false;
-        this.update = true;
         this.inArray = false;
         this.puyoMap = null;
+        this.inMap = false;
     }
 
 
@@ -44,14 +47,17 @@ class Puyo {
     }
 
     Draw() {
-        if (this.update) {
-            push(); // Settings for this puyo-puyo is contained
-            rectMode(CENTER);
-            translate(this.x + this.sizeX / 2, this.y);
-            rotate(this.rotation);
-            fill(this.color);
-            rect(0, 0, this.sizeX, this.sizeY);
-            pop();
+        push(); // Settings for this puyo-puyo is contained
+        rectMode(CENTER);
+        translate(this.x + this.sizeX / 2, this.y);
+        rotate(this.rotation);
+        fill(this.color);
+        rect(0, 0, this.sizeX, this.sizeY);
+        pop();
+
+        if (this.dropped) {
+            this.matcher.FindMatch();
+            this.matcher.DebugMatch();
         }
     }
 
@@ -74,7 +80,7 @@ class Puyo {
     }
 
     AddToCollisionMap() {
-        if (this.collision) {
+        if (this.collision && !this.inMap) {
             //console.log("["+round(this.x/gridSize) + "," + round(this.y/gridSize) +"]");
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 1;
             var color = 1;
@@ -84,12 +90,12 @@ class Puyo {
             else if (this.color == possibleColors[4]) color = 5;
             if (!this.inArray) {
                 this.puyoMap = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this)
-                var x = round(this.x/gridSize + 1) - 1;
-                var y = round(this.y/gridSize) - 1;
-                puyos[grid.x*y + x] = this.puyoMap;
+                var x = round(this.x / gridSize + 1) - 1;
+                var y = round(this.y / gridSize) - 1;
+                puyos[grid.x * y + x] = this.puyoMap;
                 this.inArray = true;
             }
-            this.RemoveFromCollisionMap();
+            this.inMap = true;
         }
     }
 

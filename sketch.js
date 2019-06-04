@@ -11,6 +11,7 @@ var activePuyo;
 function setup() {
     createCanvas(600, 800);
     rectMode(CENTER);
+    frameRate(60);
 
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
@@ -27,7 +28,7 @@ function setup() {
 
     for (var y = 0; y < grid.y; y++) {
         for (var x = 0; x < grid.x; x++) {
-            puyos.push(new PuyoMap(x,y, null, true));
+            puyos.push(new PuyoMap(x, y, null, true));
         }
     }
     // TEST
@@ -39,20 +40,13 @@ function draw() {
     background(255);
     drawGrid();
     activePuyo.Update();
-    if (activePuyo.collision) {
+    if (activePuyo.collision && puyos[2].default) {
         inactivePuyos.push(activePuyo);
-        activePuyo = new PuyoContainer();
+        //activePuyo = new PuyoContainer();
 
     }
     for (var i = 0; i < inactivePuyos.length; i++) {
-        inactivePuyos[i].Update();
-    }
-    for (var y = 0; y < grid.y; y++) {
-        for (var x = 0; x < grid.x; x++) {
-            if (!puyos[grid.x*y + x].default) {
-                findMatch(puyos[grid.x*y + x]);
-            }
-        }
+        //inactivePuyos[i].Update();
     }
     if (drawing) {
         drawCollisions();

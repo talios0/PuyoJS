@@ -42,7 +42,8 @@ class PuyoContainer {
         }
     }
 
-    AddRotation(dir, final) { // MODIFY TO CHECK FOR OTHER PUYOS THAT WOULD BLOCK ROTATION
+    AddRotation(dir, final) {
+        if (this.dropped) return;
         if (dir == 1) {
             if (this.rotation == 0) this.RotateRight(dir, final);
             else if (this.rotation == 1) this.RotateDown(dir, final);
