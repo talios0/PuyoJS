@@ -47,6 +47,11 @@ class Puyo {
     }
 
     Draw() {
+        if (debug) {
+            frameRate(5);
+        } else{
+            frameRate(60);
+        }
         push(); // Settings for this puyo-puyo is contained
         rectMode(CENTER);
         translate(this.x + this.sizeX / 2, this.y);
@@ -55,10 +60,9 @@ class Puyo {
         rect(0, 0, this.sizeX, this.sizeY);
         pop();
 
-        if (this.dropped) {
-            this.matcher.FindMatch();
-            this.matcher.DebugMatch();
-        }
+//        if (this.dropped) {
+//            this.matcher.FindMatch();
+//        }
     }
 
     Gravity() {

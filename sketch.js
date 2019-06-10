@@ -5,8 +5,11 @@ var gridSize;
 new p5();
 var possibleColors = [];
 var drawing = false;
+var analyzer = new ChainAnalyzer();
 
 var activePuyo;
+var debug = false;
+var pause = false;
 
 function setup() {
     createCanvas(600, 800);
@@ -42,11 +45,17 @@ function draw() {
     activePuyo.Update();
     if (activePuyo.collision && puyos[2].default) {
         inactivePuyos.push(activePuyo);
-        //activePuyo = new PuyoContainer();
+        if (!pause) analyzer.AnalyzeChains();
+        if (!debug) {
+            activePuyo = new PuyoContainer();
+            pause = false;
+        } else {
+            pause = true;
+        }
 
     }
     for (var i = 0; i < inactivePuyos.length; i++) {
-        //inactivePuyos[i].Update();
+        inactivePuyos[i].Update();
     }
     if (drawing) {
         drawCollisions();
@@ -90,9 +99,11 @@ function keyPressed() {
 
     if (keyCode == 65) {
         movement -= 1;
+        debug = true;
     }
     if (keyCode == 68) {
         movement += 1;
+        debug = false;
     }
 
     if (rotation != 0) {

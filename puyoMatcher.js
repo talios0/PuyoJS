@@ -13,8 +13,8 @@ class Matcher {
         if (this.redo) this.ClearMatch();
         if (this.filled) return;
 
-        var x = round(this.puyo.x/gridSize);
-        var y = round(this.puyo.y/gridSize) - 1;
+        var x = round(this.puyo.x / gridSize);
+        var y = round(this.puyo.y / gridSize) - 1;
 
         // Left
         if (!this.matchLeft && x != 0) {
@@ -31,29 +31,30 @@ class Matcher {
         // Up
         if (!this.matchUp && y != 0) {
             var puyo = puyos[(grid.x * y + x) - grid.x];
-            if (!puyo.default) 
+            if (!puyo.default)
                 if (this.puyo.type == puyo.puyo.type) this.matchUp = true;
         }
         // Down
-        if (!this.matchDown && round(y / gridSize) != grid.y) {
-            var puyo = puyos[(grid.x * (round(y / gridSize) - 1) + round(x / gridSize)) + grid.x];
-            if (!puyo.default)
-                if (this.puyo.type == puyo.puyo.type) this.matchDown = true;
+        if (!this.matchDown && round(y / gridSize) != grid.y - 1) {
+            if ((grid.x * y + x) + grid.x < puyos.length) {
+                var puyo = puyos[(grid.x * y + x) + grid.x];
+                if (!puyo.default)
+                    if (this.puyo.type == puyo.puyo.type) {
+                        this.matchDown = true;
+                    }
+            }
         }
     }
 
     DebugMatch() {
         if (this.matchLeft || this.matchRight || this.matchDown || this.matchUp) {
+            console.log("(" + round(this.puyo.x / gridSize) + "," + (round(this.puyo.y / gridSize) - 1) + ")");
             console.log(this.matchLeft);
             console.log(this.matchRight);
             console.log(this.matchDown);
             console.log(this.matchUp);
             console.log("---");
         }
-    }
-
-    AnalyzeChain() {
-
     }
 
 

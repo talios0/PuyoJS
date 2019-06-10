@@ -6,7 +6,7 @@ class PuyoMap {
         this.y = y;
         this.puyo = puyo;
         this.default = def;
-        this.id = random(10000,99999)
+        this.deletion = false;
     }
 }
 
@@ -24,3 +24,10 @@ function debugPuyos() {
     }
 }
 
+
+class PuyoChain {
+    constructor() {
+        this.posArray = [];
+        this.type = -1;
+    }
+}
