@@ -1,64 +1,64 @@
-var inactivePuyos = [];
-var collisionMap = [];
+var inactivePuyos = []; // List of Puyo Containers
+var collisionMap = []; // List of numbers, 1 or 0
 var grid;
 var gridSize;
 new p5();
 var possibleColors = [];
-var drawing = false;
 var analyzer = new ChainAnalyzer();
 
-var activePuyo;
-var debug = false;
-var pause = false;
+// CONSTANT PUYO PROPERTIES
+var speed = 2;
+
+var activePuyo; // Currently falling PuyoContainer
 
 function setup() {
-    createCanvas(600, 800);
+    createCanvas(192, 384);
     rectMode(CENTER);
     frameRate(60);
 
+    // Puyo Colors
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
     possibleColors.push(color(0, 0, 255));
     possibleColors.push(color(255, 255, 0));
     possibleColors.push(color(196, 64, 219));
 
+    // GRID
     grid = {
         x: 6,
         y: 12
     };
     gridSize = 32;
+
+    // Intialize collision map
     initalizeCollisions(grid.x + 2, grid.y + 1);
 
+    // Initialize full puyomap
     for (var y = 0; y < grid.y; y++) {
         for (var x = 0; x < grid.x; x++) {
             puyos.push(new PuyoMap(x, y, null, true));
         }
     }
-    // TEST
+
+    // Create the first puyos
     activePuyo = new PuyoContainer();
 }
 
 function draw() {
-    translate(gridSize, gridSize);
-    background(255);
+    // Grid
     drawGrid();
+    // Update Falling Puyo
     activePuyo.Update();
-    if (activePuyo.collision && puyos[2].default) {
-        inactivePuyos.push(activePuyo);
-        if (!pause) analyzer.AnalyzeChains();
-        if (!debug) {
-            activePuyo = new PuyoContainer();
-            pause = false;
-        } else {
-            pause = true;
-        }
+
+    // Check if the falling puyo has collided and is not at ending condition
+    if (activePuyo.status == 2 && puyos[2].default) {
+        inactivePuyos.push(activePuyo); // Move falling puyo to list of fallen puyos
+        analyzer.AnalyzeChains(); // Check for a chain of 4
+        activePuyo = new PuyoContainer(); // Create a new falling puyo
 
     }
     for (var i = 0; i < inactivePuyos.length; i++) {
-        inactivePuyos[i].Update();
-    }
-    if (drawing) {
-        drawCollisions();
+        inactivePuyos[i].Update(); // Update each puyo that has already fallen
     }
 }
 
@@ -99,11 +99,9 @@ function keyPressed() {
 
     if (keyCode == 65) {
         movement -= 1;
-        debug = true;
     }
     if (keyCode == 68) {
         movement += 1;
-        debug = false;
     }
 
     if (rotation != 0) {

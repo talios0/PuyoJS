@@ -1,41 +1,36 @@
 class PuyoContainer {
     constructor() {
-        this.speed = 2;
-        this.chainLength = 2;
-        this.puyos = [];
-        this.rotation = 0;
-        this.dropped = false;
-        this.collision = false;
-        for (var i = 0; i < this.chainLength; i++) {
-            this.puyos.push(new Puyo(this, this.speed, possibleColors, i));
+        this.puyos = []; // List of the falling puyos
+        this.rotation = 0; // Current rotation
+        this.status = 0;
+        for (var i = 0; i < 2; i++) {
+            this.puyos.push(new Puyo(this, possibleColors, i));
         }
     }
 
     Update() {
-        this.collision = true;
+        // Update the status of the collisions
+        this.puyos[0].Collision();
+        this.puyos[1].Collision();
+        if (this.puyos[0].collision && this.puyos[1].collision) this.status = 2;
+        else if (this.puyos[0].collision || this.puyos[1].collision) this.status = 1;
+        
         for (var i = 0; i < this.puyos.length; i++) {
-            if (this.puyos[i].collision == false) {
-                this.collision = false;
+            if (this.puyos[i].collision) { // Snap to nearest tile if in collisoin
+                this.puyos[i].x = round(this.puyos[i].x/gridSize) * gridSize;
+                this.puyos[i].y = round(this.puyos[i].y/gridSize) * gridSize - 0.5*gridSize;
+            } else {
+                this.puyos[i].Gravity(); // Move the puyo down
             }
-            this.puyos[i].Collision();
-            if (this.puyos[i].collision && !this.dropped) {
-                this.dropped = true;
-                for (var j = 0; j < this.puyos.length; j++) {
-                    this.puyos[j].dropped = true;
-                    this.puyos[j].x = round(this.puyos[j].x/gridSize) * gridSize;
-                    this.puyos[j].y = round(this.puyos[j].y/gridSize) * gridSize - 0.5*gridSize;
-                }
-            }
-            this.puyos[i].AddToCollisionMap();
-            this.puyos[i].Draw();
-            this.puyos[i].Gravity();
+            this.puyos[i].AddToCollisionMap(); // Add to the collision map
+            this.puyos[i].Draw(); // Show the puyo on screen
         }
     }
 
     Move(dir) {
-        if (this.dropped) return;
+        if (this.status > 0) return;
         for (var i = 0; i < this.puyos.length; i++) {
-            if (collisionMap[collisionLength*(round((this.puyos[i].y/gridSize)+0.5) - 1)+ (round(this.puyos[i].x/gridSize)+ 1) + dir] == 1) return;
+            if (collisionMap[collisionLength*(round((this.puyos[i].y/gridSize)+0.5) - 1)+ (round(this.puyos[i].x/gridSize)+ 1) + dir] > 0) return;
         }
         for (var i = 0; i < this.puyos.length; i++) {
             this.puyos[i].x += gridSize * dir;
@@ -43,7 +38,7 @@ class PuyoContainer {
     }
 
     AddRotation(dir, final) {
-        if (this.dropped) return;
+        if (this.status > 0) return;
         if (dir == 1) {
             if (this.rotation == 0) this.RotateRight(dir, final);
             else if (this.rotation == 1) this.RotateDown(dir, final);
@@ -56,7 +51,6 @@ class PuyoContainer {
             else if (this.rotation == 3) this.RotateDown(dir, final);
         }
     }
-
     RotateUp(dir, final) {
         this.rotation = 0;
         if (collisionMap[collisionLength*(round((this.puyos[0].y/gridSize)+0.5) - 1)+ (round(this.puyos[0].x/gridSize)+ 1) - collisionLength] == 1) { // This shouldn't be possible

@@ -1,40 +1,37 @@
 class Puyo {
-    constructor(parent, _speed, colors, pos) {
-        this.parent = parent;
-        this.pos = pos;
+    constructor(parent, colors, host) {
+        this.parent = parent; // The holding PuyoContainer
 
-        // Position
+        // Position on grid (in terms of real units not grid units)
         this.x = round((grid.x / 2 - 1) * gridSize);
         this.y = -gridSize;
-        if (this.pos == 1) {
+        if (host == 1) { // main puyo or not
             this.y -= gridSize;
         }
         // Sizes
         this.sizeX = 32;
         this.sizeY = 32;
-        // Speed
-        this.speed = _speed;
         // Color
         this.color = random(colors);
         this.type = -1;
         for (var i = 0; i < colors.length; i++) {
             if (this.color == colors[i]) {
-                this.type = i;
+                this.type = i + 1;
                 break;
             }
         }
-        // Match
+
+        // The matcher class
         this.matcher = new Matcher(this);
 
         // Other
         this.dropped = false;
         this.rotation = 0;
         this.collision = false;
-        this.inArray = false;
-        this.puyoMap = null;
+
+        // CollisionMap
         this.inMap = false;
     }
-
 
     AddRotation(dir) {
         if (this.x == 0) {
@@ -47,36 +44,24 @@ class Puyo {
     }
 
     Draw() {
-        if (debug) {
-            frameRate(5);
-        } else{
-            frameRate(60);
-        }
-        push(); // Settings for this puyo-puyo is contained
+        push();
         rectMode(CENTER);
         translate(this.x + this.sizeX / 2, this.y);
         rotate(this.rotation);
         fill(this.color);
         rect(0, 0, this.sizeX, this.sizeY);
         pop();
-
-//        if (this.dropped) {
-//            this.matcher.FindMatch();
-//        }
     }
 
     Gravity() {
-        if (!this.collision) {
-            this.y += (this.sizeY / 32) * this.speed;
-        }
-
+        this.y += (this.sizeY / 32) * speed;
     }
 
 
     Collision() {
-        // Looking for pre-emptive collision (one grid space before)
-        if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] == 1) {
+        if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] > 0) {
             this.collision = true;
+            this.AddToCollisionMap();
         } else {
             this.collision = false;
             this.RemoveFromCollisionMap();
@@ -85,38 +70,24 @@ class Puyo {
 
     AddToCollisionMap() {
         if (this.collision && !this.inMap) {
-            //console.log("["+round(this.x/gridSize) + "," + round(this.y/gridSize) +"]");
-            collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 1;
-            var color = 1;
-            if (this.color == possibleColors[1]) color = 2;
-            else if (this.color == possibleColors[2]) color = 3;
-            else if (this.color == possibleColors[3]) color = 4;
-            else if (this.color == possibleColors[4]) color = 5;
-            if (!this.inArray) {
-                this.puyoMap = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this)
-                var x = round(this.x / gridSize + 1) - 1;
-                var y = round(this.y / gridSize) - 1;
-                puyos[grid.x * y + x] = this.puyoMap;
-                this.inArray = true;
-            }
+            // Add to collisionmap, specifying type
+            collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = this.type;
+            // Add to puyomap as a puyomap
+            var x = round(this.x / gridSize + 1) - 1;
+            var y = round(this.y / gridSize) - 1;
+            puyos[grid.x * y + x] = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this);
             this.inMap = true;
         }
     }
 
     RemoveFromCollisionMap() {
-        if (!this.collision) {
+        if (!this.collision && this.inMap) {
+            // Remove from collisionmap
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
-            if (this.puyoMap != null) {
-                for (var i = 0; i < puyos.length; i++) {
-                    if (puyos[i].puyo == this) {
-                        puyos[i].default = true;
-                        puyos[i].puyo = null;
-                        console.log("found");
-                        break;
-                    }
-                }
-                this.inArray = false;
-            }
+            var selfPuyo = puyos[grid.x * round(this.y / gridSize) - 1 + round(this.x / gridSize + 1) - 1];
+            selfPuyo.default = true;
+            selfPuyo.puyo = null;
+            this.inMap = false;
         }
     }
 }
