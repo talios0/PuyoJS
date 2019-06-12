@@ -39,6 +39,7 @@ class ChainAnalyzer {
             if (chains[i].posArray.length >= chainLength) {
                 removed = true;
                 for (var j = 0; j < chains[i].posArray.length; j++) {
+                    console.log(puyos[chains[i].posArray[j]]);
                     puyos[chains[i].posArray[j]].puyo.collision = false;
                     puyos[chains[i].posArray[j]].puyo.dropped = false;
                     puyos[chains[i].posArray[j]].puyo.RemoveFromCollisionMap();
@@ -50,22 +51,19 @@ class ChainAnalyzer {
         if (removed) {
             for (var i = 0; i < puyos.length; i++) {
                 if(puyos[i].default) continue;
-                puyos[i].matcher.redo = true;
+                puyos[i].puyo.matcher.redo = true;
             }
         }
     }
 
     FindChain(chains, i) {
         if (chains.length != 0) {
-            console.log("POSARRAY CHECK:")
-            console.log(chains);
             for (var x = 0; x < chains.length; x++) {
                 // Skip to the next chain if it is impossible for the puyo to be in this chain
                 if (chains[x].type != puyos[i].puyo.type || chains[x].posArray.length == 0) continue;
                 for (var y = 0; y < chains[x].posArray.length; y++) {
                     if(chains[x].posArray[y] == i) {
                         // Puyo was found
-                        console.log("The existing chain was found");
                         return x;
                     }
                 }

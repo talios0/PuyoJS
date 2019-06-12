@@ -28,6 +28,7 @@ class Puyo {
         this.dropped = false;
         this.rotation = 0;
         this.collision = false;
+        this.posInPuyos = -1;
 
         // CollisionMap
         this.inMap = false;
@@ -76,16 +77,23 @@ class Puyo {
             var x = round(this.x / gridSize + 1) - 1;
             var y = round(this.y / gridSize) - 1;
             puyos[grid.x * y + x] = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this);
+            this.posInPuyos = grid.x * y + x;
+            puyos[this.posInPuyos].puyo = this;
+            console.log(puyos[this.posInPuyos]);
             this.inMap = true;
         }
     }
 
     RemoveFromCollisionMap() {
         if (!this.collision && this.inMap) {
+
             // Remove from collision map
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
-            puyos[grid.x * round(this.y / gridSize) + round(this.x / gridSize)].default = true;
-            //puyos[grid.x * round(this.y / gridSize) + round(this.x / gridSize)].puyo = null;
+            if (this.posInPuyos != -1) {
+                puyos[this.posInPuyos].default = true;
+                puyos[this.posInPuyos].puyo = null;
+                this.posInPuyos = -1;
+            }
             this.inMap = false;
         }
     }
