@@ -1,13 +1,14 @@
+new p5();
 var inactivePuyos = []; // List of Puyo Containers
 var collisionMap = []; // List of numbers, 1 or 0
 var grid;
 var gridSize;
-new p5();
 var possibleColors = [];
 var analyzer = new ChainAnalyzer();
 
 // CONSTANT PUYO PROPERTIES
 var speed = 2;
+var chainLength = 4;
 
 var activePuyo; // Currently falling PuyoContainer
 

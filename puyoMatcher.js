@@ -1,10 +1,12 @@
 class Matcher {
     constructor(puyo) {
-        this.puyo = puyo;
-        this.matchLeft = false;
+        this.puyo = puyo; // Parent Puyo
+        // Directions where touching another puyo of the same type
+        this.matchLeft = false; 
         this.matchRight = false;
         this.matchUp = false;
         this.matchDown = false;
+        // Properties
         this.filled = false;
         this.redo = true;
     }
@@ -45,18 +47,6 @@ class Matcher {
             }
         }
     }
-
-    DebugMatch() {
-        if (this.matchLeft || this.matchRight || this.matchDown || this.matchUp) {
-            console.log("(" + round(this.puyo.x / gridSize) + "," + (round(this.puyo.y / gridSize) - 1) + ")");
-            console.log(this.matchLeft);
-            console.log(this.matchRight);
-            console.log(this.matchDown);
-            console.log(this.matchUp);
-            console.log("---");
-        }
-    }
-
 
     ClearMatch() {
         this.redo = false;

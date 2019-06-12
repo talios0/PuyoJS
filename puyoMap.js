@@ -6,24 +6,8 @@ class PuyoMap {
         this.y = y;
         this.puyo = puyo;
         this.default = def;
-        this.deletion = false;
     }
 }
-
-function debugPuyos() {
-    for (var y = 0; y < grid.y; y++) {
-        var line = "";
-        for (var x = 0; x < grid.x; x++) {
-            if (puyos[grid.x*y + x].default == true) {
-                line += "- ";
-            } else {
-                line += puyos[grid.x*y+x].puyo.type + " ";
-            }
-        }
-        console.log(line + ":" + y);
-    }
-}
-
 
 class PuyoChain {
     constructor() {

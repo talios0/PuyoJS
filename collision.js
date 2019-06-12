@@ -2,7 +2,6 @@ var collisionMap = [];
 var collisionLength = 0;
 var collisionHeight = 0;
 
-
 function initalizeCollisions(length, height) {
     // top left is 0 (1 outside on x)
     collisionMap = new Array(length*height);
@@ -31,21 +30,6 @@ function initalizeCollisions(length, height) {
             line += collisionMap[collisionLength*y + x] + " ";
         }
     }
-}
-
-function drawCollisions() {
-    push();
-    fill(255,75,200);
-    noStroke();
-    rectMode(CENTER);
-    for (var y = 0; y < collisionHeight; y++) {
-        for (var x = 0; x < collisionLength; x++) {
-            if (collisionMap[collisionLength*y + x] == 1) {
-                rect((x-1)* gridSize + gridSize/2,(y)*gridSize + gridSize/2, gridSize, gridSize);
-            }
-        }
-    }
-    pop();
 }
 
 function debugCollisions() {

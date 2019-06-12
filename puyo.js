@@ -82,11 +82,10 @@ class Puyo {
 
     RemoveFromCollisionMap() {
         if (!this.collision && this.inMap) {
-            // Remove from collisionmap
+            // Remove from collision map
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
-            var selfPuyo = puyos[grid.x * round(this.y / gridSize) - 1 + round(this.x / gridSize + 1) - 1];
-            selfPuyo.default = true;
-            selfPuyo.puyo = null;
+            puyos[grid.x * round(this.y / gridSize) + round(this.x / gridSize)].default = true;
+            //puyos[grid.x * round(this.y / gridSize) + round(this.x / gridSize)].puyo = null;
             this.inMap = false;
         }
     }
