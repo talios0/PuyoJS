@@ -4,7 +4,7 @@ class ChainAnalyzer {
 
         var chains = [];
         for (var i = 0; i < puyos.length; i++) {
-            if (puyos[i].default) continue; // Go to the next if the current puyo doesn't exist
+            if (puyos[i].default || !puyos[i].puyo.drawable) continue; // Go to the next if the current puyo doesn't exist
             var puyoMatcher = puyos[i].puyo.matcher; // Reference for matcher
             puyoMatcher.FindMatch(); // Find match
             var foundChain = -1; // Index of chain in chains[]
@@ -17,8 +17,7 @@ class ChainAnalyzer {
                     foundChain = chains.length - 1;
                     chains[foundChain].posArray.push(i);
                 }
-            }
-            else if (puyoMatcher.matchRight || puyoMatcher.matchDown) {
+            } else if (puyoMatcher.matchRight || puyoMatcher.matchDown) {
                 // A chain exists, but hasn't been created, so create a chain and store its position
                 chains.push(new PuyoChain());
                 foundChain = chains.length - 1;
@@ -26,10 +25,10 @@ class ChainAnalyzer {
                 chains[foundChain].type = puyos[i].puyo.type;
             }
             if (puyoMatcher.matchRight) {
-                chains[foundChain].posArray.push(i+1); 
+                chains[foundChain].posArray.push(i + 1);
             }
             if (puyoMatcher.matchDown) {
-                chains[foundChain].posArray.push((i+grid.x));
+                chains[foundChain].posArray.push((i + grid.x));
             }
         }
 
@@ -40,17 +39,26 @@ class ChainAnalyzer {
                 removed = true;
                 for (var j = 0; j < chains[i].posArray.length; j++) {
                     console.log(puyos[chains[i].posArray[j]]);
-                    puyos[chains[i].posArray[j]].puyo.collision = false;
-                    puyos[chains[i].posArray[j]].puyo.dropped = false;
-                    puyos[chains[i].posArray[j]].puyo.RemoveFromCollisionMap();
+                    if (puyos[chains[i].posArray[j]].puyo != null) {
+                        puyos[chains[i].posArray[j]].puyo.drawable = false;
+                        puyos[chains[i].posArray[j]].puyo.RemoveFromCollisionMap(true);
+                    }else {
+                        if (chains[i].posArray[j] == (grid.x * (round(activePuyo.puyos[0].y / gridSize) - 1) + round(activePuyo.puyos[0].x / gridSize) - 1)) {
+                            activePuyo.puyos[0] == null;
+                        }
+                    }
+                    puyos[chains[i].posArray[j]].puyo = null;
+                    puyos[chains[i].posArray[j]].default = true;
+
                     console.log("REMOVING");
                 }
+                temp = true;
             }
         }
 
         if (removed) {
             for (var i = 0; i < puyos.length; i++) {
-                if(puyos[i].default) continue;
+                if (puyos[i].default) continue;
                 puyos[i].puyo.matcher.redo = true;
             }
         }
@@ -62,7 +70,7 @@ class ChainAnalyzer {
                 // Skip to the next chain if it is impossible for the puyo to be in this chain
                 if (chains[x].type != puyos[i].puyo.type || chains[x].posArray.length == 0) continue;
                 for (var y = 0; y < chains[x].posArray.length; y++) {
-                    if(chains[x].posArray[y] == i) {
+                    if (chains[x].posArray[y] == i) {
                         // Puyo was found
                         return x;
                     }

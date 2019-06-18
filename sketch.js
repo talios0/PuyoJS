@@ -1,10 +1,12 @@
 new p5();
-var inactivePuyos = []; // List of Puyo Containers
+var tempPuyos = [];
 var collisionMap = []; // List of numbers, 1 or 0
 var grid;
 var gridSize;
 var possibleColors = [];
 var analyzer = new ChainAnalyzer();
+
+var temp = false;
 
 // CONSTANT PUYO PROPERTIES
 var speed = 2;
@@ -53,13 +55,18 @@ function draw() {
 
     // Check if the falling puyo has collided and is not at ending condition
     if (activePuyo.status == 2 && puyos[2].default) {
-        inactivePuyos.push(activePuyo); // Move falling puyo to list of fallen puyos
+        //inactivePuyos.push(activePuyo); // Move falling puyo to list of fallen puyos
         analyzer.AnalyzeChains(); // Check for a chain of 4
-        activePuyo = new PuyoContainer(); // Create a new falling puyo
+        if (!temp) activePuyo = new PuyoContainer(); // Create a new falling puyo
 
     }
-    for (var i = 0; i < inactivePuyos.length; i++) {
-        inactivePuyos[i].Update(); // Update each puyo that has already fallen
+    for (var i = 0; i < puyos.length; i++) {
+        if (puyos[i].default) continue;
+        puyos[i].puyo.Draw(); // Update each puyo that has already fallen
+    }
+
+    for (var i = 0; i < tempPuyos.length; i++) {
+        tempPuyos[i].Draw();
     }
 }
 

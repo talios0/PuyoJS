@@ -1,4 +1,4 @@
-var puyos = []
+var puyos = [];
 
 class PuyoMap {
     constructor(x, y, puyo, def = false) {

@@ -32,19 +32,19 @@ class Puyo {
 
         // CollisionMap
         this.inMap = false;
+        this.inTemp = false;
+        this.posInTemp = -1;
+
+        this.drawable = true;
     }
 
-    AddRotation(dir) {
-        if (this.x == 0) {
-            if ((this.rotation == 0 && dir == -1) || (this.rotation == -PI && dir == 1)) {
-                return;
-            }
-        }
-        this.rotation += -HALF_PI * dir;
-        this.rotation %= 2 * PI;
+    Update() {
+        this.Gravity();
+        this.Draw();
     }
 
     Draw() {
+        if (this.drawable) {
         push();
         rectMode(CENTER);
         translate(this.x + this.sizeX / 2, this.y);
@@ -52,9 +52,11 @@ class Puyo {
         fill(this.color);
         rect(0, 0, this.sizeX, this.sizeY);
         pop();
+        }
     }
 
     Gravity() {
+        if (this.collision) return;
         this.y += (this.sizeY / 32) * speed;
     }
 
@@ -63,9 +65,10 @@ class Puyo {
         if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] > 0) {
             this.collision = true;
             this.AddToCollisionMap();
-        } else {
+        } else if (this.inMap) {
             this.collision = false;
             this.RemoveFromCollisionMap();
+            console.log("UH OH, time to remove");
         }
     }
 
@@ -81,11 +84,14 @@ class Puyo {
             puyos[this.posInPuyos].puyo = this;
             console.log(puyos[this.posInPuyos]);
             this.inMap = true;
+            if (this.inTemp) {
+                tempPuyos.splice(this);
+            }
         }
     }
 
-    RemoveFromCollisionMap() {
-        if (!this.collision && this.inMap) {
+    RemoveFromCollisionMap(force = false) {
+        if ((!this.collision && this.inMap) || force)  {
 
             // Remove from collision map
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
@@ -94,7 +100,17 @@ class Puyo {
                 puyos[this.posInPuyos].puyo = null;
                 this.posInPuyos = -1;
             }
+            if (!force) {
+                tempPuyos.push(this);
+                this.inTemp = true;
+                this.posInTemp = tempPuyos.length;
+                if (this == activePuyo.puyos[0] || this == activePuyo.puyos[1]) {
+                    //activePuyo.puyos.splice(this);
+                    //this.drawable = false;
+                }
+            }
             this.inMap = false;
+            console.log("done reomving");
         }
     }
 }
