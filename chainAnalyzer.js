@@ -36,8 +36,9 @@ class ChainAnalyzer {
         // Chain Combination
         chains = this.CombineChains(chains);
 
-        //console.log(chains);
+        console.log(chains);
 
+        // Remove puyo chains of length > 4
         for (var i = 0; i < chains.length; i++) {
             if (chains[i].posArray.length >= chainLength) {
                 removed = true;
@@ -73,7 +74,6 @@ class ChainAnalyzer {
         for (var a = 0; a < chainSize; a++) {
             for (var b = 0; b < chainSize; b++) {
                 if (a >= b) continue; // The same check has already occurred, except a and b were swapped/they are the same chain 
-                console.log("A: " + a + "B: " + b);
                 if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
                     console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
                     var finished = false;
@@ -87,18 +87,8 @@ class ChainAnalyzer {
                                     newChain.posArray.push(chains[a].posArray[i]);
                                 }
                                 for (var i = 0; i < chains[b].posArray.length; i++) {
-                                    // prevent duplicates from being added
-                                    var duplicate = false;
-                                    for (var j= 0; j < newChain.posArray.length; j++) {
-                                        if (chains[b].posArray[j] == newChain.posArray[j]) {
-                                            duplicate = true;
-                                            break;
-                                        }
-                                    }
-                                    if (duplicate) continue;
-                                    newChain.posArray.push(chains[b].posArray[j]);
+                                    newChain.posArray.push(chains[b].posArray[i]);
                                 }
-
 
                                 chains.push(newChain);
                                 finished = true;
