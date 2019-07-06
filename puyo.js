@@ -46,7 +46,7 @@ class Puyo {
     }
 
     TempUpdate() {
-        console.log("TEMP");
+        //console.log("TEMP");
         this.Gravity();
         this.Draw();
     }
@@ -113,7 +113,7 @@ class Puyo {
                 }
             }
             this.inMap = false;
-            console.log("done reomving");
+            //console.log("done reomving");
         }
     }
 }

@@ -34,47 +34,9 @@ class ChainAnalyzer {
         }
 
         // Chain Combination
-        for (var a = 0; a < chains.length; a++) {
-            for (var b = 0; b < chains.length; b++) {
-                if (a >= b) continue; // The same check has already occurred, except a and b were swapped/they are the same chain 
-                if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
-                    console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
-                    var finished = false;
-                    for (var c = 0; c < chains[a].posArray.length; c++) {
-                        for (var d = 0; d < chains[b].posArray.length; d++) {
-                            if (chains[a].posArray[c] == chains[b].posArray[d]) { // The same puyo was found in both arrays, so combine them
-                                console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
-                                var newChain = new PuyoChain();
-                                newChain.type = chains[a].type;
-                                for (var i = 0; i < chains[a].posArray.length; i++) {
-                                    newChain.posArray.push(chains[a].posArray[i]);
-                                }
-                                for (var i = 0; i < chains[b].posArray.length; i++) {
-                                    // prevent duplicates from being added
-                                    var duplicate = false;
-                                    for (var l = 0; l < newChain.posArray.length; l++) {
-                                        if (chains[b].posArray[i] == newChain.posArray[l]) {
-                                            duplicate = true;
-                                            break;
-                                        }
-                                    }
-                                    if (duplicate) continue;
-                                    newChain.posArray.push(chains[b].posArray[i]);
-                                }
+        chains = this.CombineChains(chains);
 
-
-                                chains.push(newChain);
-                                finished = true;
-                            }
-                            if (finished) break;
-                        }
-                        if (finished) break;
-                    }
-                }
-            }
-        }
-
-        console.log(chains);
+        //console.log(chains);
 
         for (var i = 0; i < chains.length; i++) {
             if (chains[i].posArray.length >= chainLength) {
@@ -104,6 +66,51 @@ class ChainAnalyzer {
                 puyos[i].puyo.matcher.redo = true;
             }
         }
+    }
+
+    CombineChains(chains) {
+        var chainSize = chains.length;
+        for (var a = 0; a < chainSize; a++) {
+            for (var b = 0; b < chainSize; b++) {
+                if (a >= b) continue; // The same check has already occurred, except a and b were swapped/they are the same chain 
+                console.log("A: " + a + "B: " + b);
+                if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
+                    console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
+                    var finished = false;
+                    for (var c = 0; c < chains[a].posArray.length; c++) {
+                        for (var d = 0; d < chains[b].posArray.length; d++) {
+                            if (chains[a].posArray[c] == chains[b].posArray[d]) { // The same puyo was found in both arrays, so combine them
+                                console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
+                                var newChain = new PuyoChain();
+                                newChain.type = chains[a].type;
+                                for (var i = 0; i < chains[a].posArray.length; i++) {
+                                    newChain.posArray.push(chains[a].posArray[i]);
+                                }
+                                for (var i = 0; i < chains[b].posArray.length; i++) {
+                                    // prevent duplicates from being added
+                                    var duplicate = false;
+                                    for (var j= 0; j < newChain.posArray.length; j++) {
+                                        if (chains[b].posArray[j] == newChain.posArray[j]) {
+                                            duplicate = true;
+                                            break;
+                                        }
+                                    }
+                                    if (duplicate) continue;
+                                    newChain.posArray.push(chains[b].posArray[j]);
+                                }
+
+
+                                chains.push(newChain);
+                                finished = true;
+                            }
+                            if (finished) break;
+                        }
+                        if (finished) break;
+                    }
+                }
+            }
+        }
+        return chains;
     }
 
     FindChain(chains, i) {
