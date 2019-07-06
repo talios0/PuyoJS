@@ -13,6 +13,12 @@ var speed = 2;
 var chainLength = 4;
 
 var activePuyo; // Currently falling PuyoContainer
+var falling = false;
+
+var waitFrames = 15;
+var frames = 0;
+
+var done = false;
 
 function setup() {
     createCanvas(192, 384);
@@ -54,20 +60,52 @@ function draw() {
     activePuyo.Update();
 
     // Check if the falling puyo has collided and is not at ending condition
-    if (activePuyo.status == 2 && puyos[2].default) {
+    if (activePuyo.status == 2 && puyos[2].default && !falling) {
         //inactivePuyos.push(activePuyo); // Move falling puyo to list of fallen puyos
-        analyzer.AnalyzeChains(); // Check for a chain of 4
-        if (!temp) activePuyo = new PuyoContainer(); // Create a new falling puyo
+        if (!done) {
+            analyzer.AnalyzeChains(); // Check for a chain of 4
+            done = true;
+        }
+        if (frames >= waitFrames && !temp) {
+            activePuyo = new PuyoContainer(); // Create a new falling puyo
+            frames = 0;
+            done = false;
+        } else frames++;
+        if (frames > waitFrames) frames = waitFrames; // Stops overflow if temp is checked
+
 
     }
     for (var i = 0; i < puyos.length; i++) {
         if (puyos[i].default) continue;
-        puyos[i].puyo.Draw(); // Update each puyo that has already fallen
+        puyos[i].puyo.Update(); // Update each puyo that has already fallen
     }
 
+    falling = false;
+    UpdateTemp();
+}
+
+
+function UpdateTemp() {
     for (var i = 0; i < tempPuyos.length; i++) {
-        tempPuyos[i].Draw();
+        tempPuyos[i].Update();
     }
+    UpdateTempCollision();
+    while (!UpdateTempCollision());
+}
+
+function UpdateTempCollision() {
+    for (var i = 0; i < tempPuyos.length; i++) {
+        tempPuyos[i].Collision();
+        if (tempPuyos[i].collision) {
+            console.log("SPLICER");
+            tempPuyos.splice(i);
+            i--;
+            //return false;
+        } else {
+            falling = true;
+        }
+    }
+    return true;
 }
 
 function drawGrid() {

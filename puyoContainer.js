@@ -10,11 +10,6 @@ class PuyoContainer {
 
     Update() {
         // Update the status of the collisions
-        for (var i = 0; i < this.puyos.length; i++) this.puyos[i].Collision();
-
-        if ((this.puyos[0].collision || !this.puyos[0].drawable) && (this.puyos[1].collision || !this.puyos[1].drawable)) this.status = 2;
-        else if ((this.puyos[0].collision || !this.puyos[0].drawable) || (this.puyos[1].collision || !this.puyos[1].drawable)) this.status = 1;
-
         for (var i = 0; i < this.puyos.length; i++) {
             if (!this.puyos[i].drawable) continue;
             if (this.puyos[i].collision) { // Snap to nearest tile if in collision
@@ -24,6 +19,10 @@ class PuyoContainer {
             //this.puyos[i].AddToCollisionMap(); // Add to the collision map
             this.puyos[i].Update();
         }
+
+        if ((this.puyos[0].collision || !this.puyos[0].drawable) && (this.puyos[1].collision || !this.puyos[1].drawable)) this.status = 2;
+        else if ((this.puyos[0].collision || !this.puyos[0].drawable) || (this.puyos[1].collision || !this.puyos[1].drawable)) this.status = 1;
+
     }
 
     Move(dir) {

@@ -39,6 +39,14 @@ class Puyo {
     }
 
     Update() {
+        //console.log("OFFICIAL");
+        this.Collision();
+        this.Gravity();
+        this.Draw();
+    }
+
+    TempUpdate() {
+        console.log("TEMP");
         this.Gravity();
         this.Draw();
     }
@@ -65,10 +73,9 @@ class Puyo {
         if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] > 0) {
             this.collision = true;
             this.AddToCollisionMap();
-        } else if (this.inMap) {
+        } else {
             this.collision = false;
             this.RemoveFromCollisionMap();
-            console.log("UH OH, time to remove");
         }
     }
 
@@ -82,11 +89,7 @@ class Puyo {
             puyos[grid.x * y + x] = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this);
             this.posInPuyos = grid.x * y + x;
             puyos[this.posInPuyos].puyo = this;
-            console.log(puyos[this.posInPuyos]);
             this.inMap = true;
-            if (this.inTemp) {
-                tempPuyos.splice(this);
-            }
         }
     }
 

@@ -12,13 +12,14 @@ class ChainAnalyzer {
                 // Chain already started, so find and store it
                 foundChain = this.FindChain(chains, i);
                 if (foundChain == -1) {
-                    console.log("ERROR: COULDN'T FIND CHAIN");
+                    //console.log("ERROR: COULDN'T FIND CHAIN");
                     chains.push(new PuyoChain());
                     foundChain = chains.length - 1;
                     chains[foundChain].posArray.push(i);
                 }
             } else if (puyoMatcher.matchRight || puyoMatcher.matchDown) {
                 // A chain exists, but hasn't been created, so create a chain and store its position
+
                 chains.push(new PuyoChain());
                 foundChain = chains.length - 1;
                 chains[foundChain].posArray.push(i);
@@ -32,17 +33,58 @@ class ChainAnalyzer {
             }
         }
 
-        // IMPLEMENT CHECK TO COMBINE OVERLAPPING CHAINS
+        // Chain Combination
+        for (var a = 0; a < chains.length; a++) {
+            for (var b = 0; b < chains.length; b++) {
+                if (a >= b) continue; // The same check has already occurred, except a and b were swapped/they are the same chain 
+                if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
+                    console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
+                    var finished = false;
+                    for (var c = 0; c < chains[a].posArray.length; c++) {
+                        for (var d = 0; d < chains[b].posArray.length; d++) {
+                            if (chains[a].posArray[c] == chains[b].posArray[d]) { // The same puyo was found in both arrays, so combine them
+                                console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
+                                var newChain = new PuyoChain();
+                                newChain.type = chains[a].type;
+                                for (var i = 0; i < chains[a].posArray.length; i++) {
+                                    newChain.posArray.push(chains[a].posArray[i]);
+                                }
+                                for (var i = 0; i < chains[b].posArray.length; i++) {
+                                    // prevent duplicates from being added
+                                    var duplicate = false;
+                                    for (var l = 0; l < newChain.posArray.length; l++) {
+                                        if (chains[b].posArray[i] == newChain.posArray[l]) {
+                                            duplicate = true;
+                                            break;
+                                        }
+                                    }
+                                    if (duplicate) continue;
+                                    newChain.posArray.push(chains[b].posArray[i]);
+                                }
+
+
+                                chains.push(newChain);
+                                finished = true;
+                            }
+                            if (finished) break;
+                        }
+                        if (finished) break;
+                    }
+                }
+            }
+        }
+
+        console.log(chains);
 
         for (var i = 0; i < chains.length; i++) {
             if (chains[i].posArray.length >= chainLength) {
                 removed = true;
                 for (var j = 0; j < chains[i].posArray.length; j++) {
-                    console.log(puyos[chains[i].posArray[j]]);
+                    //console.log(puyos[chains[i].posArray[j]]);
                     if (puyos[chains[i].posArray[j]].puyo != null) {
                         puyos[chains[i].posArray[j]].puyo.drawable = false;
                         puyos[chains[i].posArray[j]].puyo.RemoveFromCollisionMap(true);
-                    }else {
+                    } else {
                         if (chains[i].posArray[j] == (grid.x * (round(activePuyo.puyos[0].y / gridSize) - 1) + round(activePuyo.puyos[0].x / gridSize) - 1)) {
                             activePuyo.puyos[0] == null;
                         }
@@ -50,7 +92,7 @@ class ChainAnalyzer {
                     puyos[chains[i].posArray[j]].puyo = null;
                     puyos[chains[i].posArray[j]].default = true;
 
-                    console.log("REMOVING");
+                    //console.log("REMOVING");
                 }
                 temp = true;
             }
