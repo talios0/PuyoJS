@@ -36,7 +36,7 @@ class ChainAnalyzer {
         // Chain Combination
         chains = this.CombineChains(chains);
 
-        console.log(chains);
+        //console.log(chains);
 
         // Remove puyo chains of length > 4
         for (var i = 0; i < chains.length; i++) {

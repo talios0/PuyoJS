@@ -51,7 +51,7 @@ class PuyoContainer {
     }
     RotateUp(dir, final) {
         this.rotation = 0;
-        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - collisionLength] == 1) { // This shouldn't be possible
+        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - collisionLength] > 0) { // This shouldn't be possible
             if (final) return;
             this.AddRotation(dir, true);
             return;
@@ -62,8 +62,8 @@ class PuyoContainer {
     }
     RotateRight(dir, final) {
         this.rotation = 1;
-        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + 1] == 1) {
-            if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - 1] == 1) {
+        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + 1] > 0) {
+            if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - 1] > 0) {
                 if (final) return;
                 this.AddRotation(dir, true);
                 return;
@@ -75,7 +75,7 @@ class PuyoContainer {
     }
     RotateDown(dir, final) {
         this.rotation = 2;
-        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + collisionLength] == 1) {
+        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + collisionLength] > 0) {
             this.puyos[0].y -= gridSize;
         }
 
@@ -84,8 +84,8 @@ class PuyoContainer {
     }
     RotateLeft(dir, final) {
         this.rotation = 3;
-        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - 1] == 1) {
-            if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + 1] == 1) {
+        if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) - 1] > 0) {
+            if (collisionMap[collisionLength * (round((this.puyos[0].y / gridSize) + 0.5) - 1) + (round(this.puyos[0].x / gridSize) + 1) + 1] > 0) {
                 if (final) return;
                 this.AddRotation(dir, true);
                 return;
