@@ -36,7 +36,7 @@ class ChainAnalyzer {
         // Chain Combination
         chains = this.CombineChains(chains);
 
-        //console.log(chains);
+        console.log(chains);
 
         // Remove puyo chains of length > 4
         for (var i = 0; i < chains.length; i++) {
@@ -87,7 +87,13 @@ class ChainAnalyzer {
                                     newChain.posArray.push(chains[a].posArray[i]);
                                 }
                                 for (var i = 0; i < chains[b].posArray.length; i++) {
-                                    newChain.posArray.push(chains[b].posArray[i]);
+                                    var duplicate = false;
+                                    for (var z = 0; z < newChain.posArray.length; z++) {
+                                        if (newChain.posArray[z] != chains[b].posArray[i]) continue;
+                                        duplicate = true;
+                                        break;
+                                    }
+                                    if (!duplicate) newChain.posArray.push(chains[b].posArray[i]);
                                 }
 
                                 chains.push(newChain);

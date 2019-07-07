@@ -113,7 +113,6 @@ class Puyo {
                 }
             }
             this.inMap = false;
-            //console.log("done reomving");
         }
     }
 }

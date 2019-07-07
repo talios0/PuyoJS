@@ -81,19 +81,18 @@ function draw() {
     }
 
     falling = false;
-    UpdateTemp();
+    Update();
 }
 
 
-function UpdateTemp() {
+function Update() {
     for (var i = 0; i < tempPuyos.length; i++) {
         tempPuyos[i].Update();
     }
-    UpdateTempCollision();
-    while (!UpdateTempCollision());
+    //while (!UpdateCollision());
 }
 
-function UpdateTempCollision() {
+function UpdateCollision() {
     for (var i = 0; i < tempPuyos.length; i++) {
         tempPuyos[i].Collision();
         if (tempPuyos[i].collision) {
