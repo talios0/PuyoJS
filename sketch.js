@@ -107,7 +107,7 @@ function UpdateTemp() {
 function UpdateTempCollision() {
     for (var i = 0; i < tempPuyos.length; i++) {
         if (tempPuyos[i].collision) {
-            console.log("COLLISION");
+            //console.log("COLLISION");
             //console.log("SPLICER");
             tempPuyos.splice(i);
             i--;
