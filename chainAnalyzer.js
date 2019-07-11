@@ -19,7 +19,6 @@ class ChainAnalyzer {
                 }
             } else if (puyoMatcher.matchRight || puyoMatcher.matchDown) {
                 // A chain exists, but hasn't been created, so create a chain and store its position
-
                 chains.push(new PuyoChain());
                 foundChain = chains.length - 1;
                 chains[foundChain].posArray.push(i);
@@ -57,7 +56,6 @@ class ChainAnalyzer {
 
                     //console.log("REMOVING");
                 }
-                temp = true;
             }
         }
 

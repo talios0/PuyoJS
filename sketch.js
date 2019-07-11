@@ -6,8 +6,6 @@ var gridSize;
 var possibleColors = [];
 var analyzer = new ChainAnalyzer();
 
-var temp = false;
-
 // CONSTANT PUYO PROPERTIES
 var speed = 2;
 var chainLength = 4;
@@ -19,6 +17,12 @@ var waitFrames = 25;
 var frames = 0;
 
 var done = false;
+var tempPuyosExisted = false;
+
+
+// KEY INPUT
+var fastDrop = false;
+
 
 function setup() {
     createCanvas(192, 384);
@@ -28,9 +32,9 @@ function setup() {
     // Puyo Colors
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
-    //possibleColors.push(color(0, 0, 255));
-    //possibleColors.push(color(255, 255, 0));
-    //possibleColors.push(color(196, 64, 219));
+    possibleColors.push(color(0, 0, 255));
+    possibleColors.push(color(255, 255, 0));
+    possibleColors.push(color(196, 64, 219));
 
     // GRID
     grid = {
@@ -62,15 +66,16 @@ function draw() {
     // Check if the falling puyo has collided and is not at ending condition
     if (activePuyo.status == 2 && puyos[2].default && !falling) {
         //inactivePuyos.push(activePuyo); // Move falling puyo to list of fallen puyos
-        if (!done) {
+        if (!done || tempPuyosExisted) {
+            tempPuyosExisted = false;
             analyzer.AnalyzeChains(); // Check for a chain of 4
             done = true;
         }
-        if (frames >= waitFrames && !temp) {
+        if (frames >= waitFrames && !tempPuyosExisted) {
             activePuyo = new PuyoContainer(); // Create a new falling puyo
             frames = 0;
             done = false;
-        } else frames++;
+        } else if (!tempPuyosExisted) frames++;
         if (frames > waitFrames) frames = waitFrames; // Stops overflow if temp is checked
 
 
@@ -148,6 +153,9 @@ function keyPressed() {
     if (keyCode == RIGHT_ARROW) {
         rotation += 1;
     }
+    if (keyCode == 83) {
+        fastDrop = true;
+    }
 
     if (keyCode == 65) {
         movement -= 1;
@@ -161,5 +169,11 @@ function keyPressed() {
     }
     if (movement != 0) {
         activePuyo.Move(movement);
+    }
+}
+
+function keyReleased() {
+    if (keyCode == 83) {
+        fastDrop = false;
     }
 }

@@ -3,6 +3,7 @@ class PuyoContainer {
         this.puyos = []; // List of the falling puyos
         this.rotation = 0; // Current rotation
         this.status = 0;
+        this.fastDropMultiplier = 3;
         for (var i = 0; i < 2; i++) {
             this.puyos.push(new Puyo(this, possibleColors, i));
         }
@@ -25,7 +26,7 @@ class PuyoContainer {
 
     }
 
-    Move(dir) {
+    Move(dir) { // Moves the active puyo group across the grid (left-right)
         if (this.status > 0) return;
         for (var i = 0; i < this.puyos.length; i++) {
             if (collisionMap[collisionLength * (round((this.puyos[i].y / gridSize) + 0.5) - 1) + (round(this.puyos[i].x / gridSize) + 1) + dir] > 0) return;

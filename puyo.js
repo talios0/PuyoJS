@@ -36,6 +36,8 @@ class Puyo {
         this.posInTemp = -1;
 
         this.drawable = true;
+        this.fastDropMultiplier = 3;
+        this.active = true;
     }
 
     Update() {
@@ -60,7 +62,8 @@ class Puyo {
 
     Gravity() {
         if (this.collision) return;
-        this.y += (this.sizeY / 32) * speed;
+        if (fastDrop && this.active) this.y += (this.sizeY / 32) * speed * this.fastDropMultiplier;
+        else this.y += (this.sizeY / 32) * speed;
     }
 
 
@@ -92,7 +95,7 @@ class Puyo {
 
     RemoveFromCollisionMap(force = false) {
         if ((!this.collision && this.inMap) || force) {
-
+            this.active = false;
             // Remove from collision map
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
             if (this.posInPuyos != -1) {
@@ -110,6 +113,7 @@ class Puyo {
                 }
             }
             this.inMap = false;
+            tempPuyosExisted = true;
         }
     }
 }
