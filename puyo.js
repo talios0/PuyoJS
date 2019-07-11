@@ -62,7 +62,7 @@ class Puyo {
 
     Gravity() {
         if (this.collision) return;
-        if (fastDrop && this.active) this.y += (this.sizeY / 32) * speed * this.fastDropMultiplier;
+        if (fastDrop && this.active && this.parent.status == 0) this.y += (this.sizeY / 32) * speed * this.fastDropMultiplier;
         else this.y += (this.sizeY / 32) * speed;
     }
 
