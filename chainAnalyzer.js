@@ -36,7 +36,7 @@ class ChainAnalyzer {
         // Chain Combination
         chains = this.CombineChains(chains);
 
-        console.log(chains);
+        //console.log(chains);
 
         // Remove puyo chains of length > 4
         for (var i = 0; i < chains.length; i++) {
@@ -75,12 +75,12 @@ class ChainAnalyzer {
             for (var b = 0; b < chainSize; b++) {
                 if (a >= b) continue; // The same check has already occurred, except a and b were swapped/they are the same chain 
                 if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
-                    console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
+                    //console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
                     var finished = false;
                     for (var c = 0; c < chains[a].posArray.length; c++) {
                         for (var d = 0; d < chains[b].posArray.length; d++) {
                             if (chains[a].posArray[c] == chains[b].posArray[d]) { // The same puyo was found in both arrays, so combine them
-                                console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
+                                //console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
                                 var newChain = new PuyoChain();
                                 newChain.type = chains[a].type;
                                 for (var i = 0; i < chains[a].posArray.length; i++) {

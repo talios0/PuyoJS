@@ -15,7 +15,7 @@ var chainLength = 4;
 var activePuyo; // Currently falling PuyoContainer
 var falling = false;
 
-var waitFrames = 15;
+var waitFrames = 25;
 var frames = 0;
 
 var done = false;
@@ -28,9 +28,9 @@ function setup() {
     // Puyo Colors
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
-    possibleColors.push(color(0, 0, 255));
-    possibleColors.push(color(255, 255, 0));
-    possibleColors.push(color(196, 64, 219));
+    //possibleColors.push(color(0, 0, 255));
+    //possibleColors.push(color(255, 255, 0));
+    //possibleColors.push(color(196, 64, 219));
 
     // GRID
     grid = {
@@ -77,25 +77,32 @@ function draw() {
     }
     for (var i = 0; i < puyos.length; i++) {
         if (puyos[i].default) continue;
+        //if (falling & !puyos[i].inMap) continue;
         puyos[i].puyo.Update(); // Update each puyo that has already fallen
     }
 
-    falling = false;
-    Update();
+    UpdateTemp();
 }
 
 
-function Update() {
+function UpdateTemp() {
+    falling = false;
+    var newTemp = [];
     for (var i = 0; i < tempPuyos.length; i++) {
         tempPuyos[i].Update();
+        if (!tempPuyos[i].collision) {
+            newTemp.push(tempPuyos[i]);
+            falling = true;
+        }
     }
-    //while (!UpdateCollision());
+    tempPuyos = newTemp;
+    if (newTemp.length == 0) falling = false;
 }
 
-function UpdateCollision() {
+function UpdateTempCollision() {
     for (var i = 0; i < tempPuyos.length; i++) {
-        tempPuyos[i].Collision();
         if (tempPuyos[i].collision) {
+            console.log("COLLISION");
             //console.log("SPLICER");
             tempPuyos.splice(i);
             i--;
