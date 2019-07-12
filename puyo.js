@@ -9,8 +9,8 @@ class Puyo {
             this.y -= gridSize;
         }
         // Sizes
-        this.sizeX = 32;
-        this.sizeY = 32;
+        this.sizeX = gridSize;
+        this.sizeY = gridSize;
         // Color
         this.color = random(colors);
         this.type = -1;
@@ -95,7 +95,6 @@ class Puyo {
 
     RemoveFromCollisionMap(force = false) {
         if ((!this.collision && this.inMap) || force) {
-            this.active = false;
             // Remove from collision map
             collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = 0;
             if (this.posInPuyos != -1) {
@@ -104,12 +103,10 @@ class Puyo {
                 this.posInPuyos = -1;
             }
             if (!force) {
-                tempPuyos.push(this);
-                this.inTemp = true;
-                this.posInTemp = tempPuyos.length;
-                if (this == activePuyo.puyos[0] || this == activePuyo.puyos[1]) {
-                    //activePuyo.puyos.splice(this);
-                    //this.drawable = false;
+                if (activePuyo != this.parent) {
+                    tempPuyos.push(this);
+                    this.inTemp = true;
+                    this.posInTemp = tempPuyos.length;
                 }
             }
             this.inMap = false;

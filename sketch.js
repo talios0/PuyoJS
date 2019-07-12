@@ -25,23 +25,23 @@ var fastDrop = false;
 
 
 function setup() {
-    createCanvas(192, 384);
+    createCanvas(1000, 1000);
     rectMode(CENTER);
     frameRate(60);
 
     // Puyo Colors
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
-    possibleColors.push(color(0, 0, 255));
-    possibleColors.push(color(255, 255, 0));
-    possibleColors.push(color(196, 64, 219));
+    //possibleColors.push(color(0, 0, 255));
+    //possibleColors.push(color(255, 255, 0));
+    //possibleColors.push(color(196, 64, 219));
 
     // GRID
     grid = {
         x: 6,
         y: 12
     };
-    gridSize = 32;
+    gridSize = 64;
 
     // Intialize collision map
     initalizeCollisions(grid.x + 2, grid.y + 1);
@@ -121,6 +121,7 @@ function UpdateTempCollision() {
 
 function drawGrid() {
     var col = 0;
+    background(255);
     for (var x = 0; x < grid.x; x++) {
         if (col == 0) {
             fill(100);
