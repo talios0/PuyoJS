@@ -25,7 +25,7 @@ var fastDrop = false;
 
 
 function setup() {
-    createCanvas(1000, 1000);
+    createCanvas(384, 768);
     rectMode(CENTER);
     frameRate(60);
 
@@ -121,7 +121,6 @@ function UpdateTempCollision() {
 
 function drawGrid() {
     var col = 0;
-    background(255);
     for (var x = 0; x < grid.x; x++) {
         if (col == 0) {
             fill(100);
