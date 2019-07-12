@@ -32,9 +32,9 @@ function setup() {
     // Puyo Colors
     possibleColors.push(color(255, 0, 0));
     possibleColors.push(color(0, 255, 0));
-    //possibleColors.push(color(0, 0, 255));
-    //possibleColors.push(color(255, 255, 0));
-    //possibleColors.push(color(196, 64, 219));
+    possibleColors.push(color(0, 0, 255));
+    possibleColors.push(color(255, 255, 0));
+    possibleColors.push(color(196, 64, 219));
 
     // GRID
     grid = {
