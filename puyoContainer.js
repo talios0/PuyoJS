@@ -5,8 +5,10 @@ class PuyoContainer {
         this.status = 0;
         this.fastDropMultiplier = 3;
         for (var i = 0; i < 2; i++) {
-            this.puyos.push(new Puyo(this, possibleColors, i));
+            this.puyos.push(new Puyo(this, i));
         }
+        this.puyos[0].CheckSprite();
+        this.puyos[1].CheckSprite();
     }
 
     Update() {
@@ -49,6 +51,8 @@ class PuyoContainer {
             else if (this.rotation == 2) this.RotateRight(dir, final);
             else if (this.rotation == 3) this.RotateDown(dir, final);
         }
+        this.puyos[0].CheckSprite();
+        this.puyos[1].CheckSprite();
     }
     RotateUp(dir, final) {
         this.rotation = 0;

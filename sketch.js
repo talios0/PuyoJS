@@ -3,7 +3,7 @@ var tempPuyos = [];
 var collisionMap = []; // List of numbers, 1 or 0
 var grid;
 var gridSize;
-var possibleColors = [];
+var puyoColors = [0, 1, 2, 3, 4]; // RED, GREEN, BLUE, YELLOW, PURPLE
 var analyzer = new ChainAnalyzer();
 
 // CONSTANT PUYO PROPERTIES
@@ -14,27 +14,32 @@ var activePuyo; // Currently falling PuyoContainer
 var falling = false;
 
 var waitFrames = 25;
+var lockInFrames = 25;
 var frames = 0;
 
 var done = false;
 var tempPuyosExisted = false;
 
+let puyoSpriteSheet;
+let puyoSize = 512;
 
 // KEY INPUT
 var fastDrop = false;
 
+var centerOffsetX = 0;
+var centerOffsetY = 0;
+
+var tempTest = true;
+
+function preload() {
+    puyoSpriteSheet = loadImage("Samples/Spritesheet2.png");
+}
 
 function setup() {
-    createCanvas(384, 768);
+    createCanvas(550, 850);
     rectMode(CENTER);
     frameRate(60);
-
-    // Puyo Colors
-    possibleColors.push(color(255, 0, 0));
-    possibleColors.push(color(0, 255, 0));
-    possibleColors.push(color(0, 0, 255));
-    possibleColors.push(color(255, 255, 0));
-    possibleColors.push(color(196, 64, 219));
+    background(color("black"));
 
     // GRID
     grid = {
@@ -42,6 +47,9 @@ function setup() {
         y: 12
     };
     gridSize = 64;
+    
+    centerOffsetX = (550-(gridSize*6))/2;
+    centerOffsetY = (850 - (gridSize*12))/2;
 
     // Intialize collision map
     initalizeCollisions(grid.x + 2, grid.y + 1);
@@ -58,10 +66,12 @@ function setup() {
 }
 
 function draw() {
+    background(color("black"))
     // Grid
     drawGrid();
     // Update Falling Puyo
     activePuyo.Update();
+
 
     // Check if the falling puyo has collided and is not at ending condition
     if (activePuyo.status == 2 && puyos[2].default && !falling) {
@@ -121,6 +131,12 @@ function UpdateTempCollision() {
 
 function drawGrid() {
     var col = 0;
+    // Border
+    fill(color("white"));
+    push();
+    rectMode(CORNER);
+    rect(centerOffsetX - 10, centerOffsetY - 10, gridSize*6 + 20, gridSize *12 + 20);
+    pop();
     for (var x = 0; x < grid.x; x++) {
         if (col == 0) {
             fill(100);
@@ -138,7 +154,7 @@ function drawGrid() {
                 col = 0;
             }
             noStroke();
-            rect(x * gridSize + gridSize / 2, y * gridSize + gridSize / 2, gridSize, gridSize);
+            rect(x * gridSize + gridSize / 2 + centerOffsetX, y * gridSize + gridSize / 2 + centerOffsetY, gridSize, gridSize);
         }
     }
 }

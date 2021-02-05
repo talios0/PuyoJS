@@ -20,15 +20,24 @@ function initalizeCollisions(length, height) {
             else if (y == height - 1) {
                 collisionMap[collisionLength*y + x] = 1;
             } else {
-                collisionMap[collisionLength*y + x] = 0;
+                collisionMap[collisionLength*y + x] = -1;
             }
             
             if (y == 0 && (x != 0 && x != collisionLength - 1)) {
-                collisionMap[collisionLength*y + x] = 0;
+                collisionMap[collisionLength*y + x] = -1;
             } 
 
             line += collisionMap[collisionLength*y + x] + " ";
         }
+    }
+}
+
+function addCollision(row, col, color) {
+    if (collisionMap[row * collisionLength + col + 1] != -1) {
+        console.log("A collsion already exists at that location!");
+    }
+    else {
+        collisionMap[row * collisionLength + col + 1] = color;
     }
 }
 

@@ -22,30 +22,32 @@ class Matcher {
         if (!this.matchLeft && x != 0) {
             var puyo = puyos[(grid.x * y + x) - 1];
             if (!puyo.default)
-                if (this.puyo.type == puyo.puyo.type) this.matchLeft = true;
+                if (this.puyo.color == puyo.puyo.color) this.matchLeft = true;
+                
         }
         // Right
         if (!this.matchRight && x + 1 != grid.x) {
             var puyo = puyos[(grid.x * y + x) + 1];
             if (!puyo.default)
-                if (this.puyo.type == puyo.puyo.type) this.matchRight = true;
+                if (this.puyo.color ==  puyo.puyo.color) this.matchRight = true;
         }
         // Up
         if (!this.matchUp && y != 0) {
             var puyo = puyos[(grid.x * y + x) - grid.x];
             if (!puyo.default)
-                if (this.puyo.type == puyo.puyo.type) this.matchUp = true;
+                if (this.puyo.color ==  puyo.puyo.color) this.matchUp = true;
         }
         // Down
         if (!this.matchDown && round(y / gridSize) != grid.y - 1) {
             if ((grid.x * y + x) + grid.x < puyos.length) {
                 var puyo = puyos[(grid.x * y + x) + grid.x];
                 if (!puyo.default)
-                    if (this.puyo.type == puyo.puyo.type) {
+                    if (this.puyo.color == puyo.puyo.color) {
                         this.matchDown = true;
                     }
             }
         }
+        if (this.matchLeft || this.matchRight || this.matchDown || this.matchUp) this.puyo.CheckSprite();
     }
 
     ClearMatch() {
