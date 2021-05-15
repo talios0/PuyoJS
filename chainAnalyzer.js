@@ -1,7 +1,15 @@
 class ChainAnalyzer {
-    AnalyzeChains() {
-        var removed = false; // true when at least one chain is removed
+    constructor() {
+        this.chainInterupt = false;
+        this.chainDelay = 50;
+        this.frameCounter = 0;
+        this.frameBlink = 0;
+        // Basically I haven't worked on this project in months and I should replace this with a set
+        // and it's callers to work without random access through [], but I won't, which is less performant.
+        this.chains = [];
+    }
 
+    AnalyzeChains() {
         var chains = [];
         for (var i = 0; i < puyos.length; i++) {
             if (puyos[i].default || !puyos[i].puyo.drawable) continue; // Go to the next if the current puyo doesn't exist
@@ -12,47 +20,77 @@ class ChainAnalyzer {
                 // Chain already started, so find and store it
                 foundChain = this.FindChain(chains, i);
                 if (foundChain == -1) {
-                    //console.log("ERROR: COULDN'T FIND CHAIN");
                     chains.push(new PuyoChain());
                     foundChain = chains.length - 1;
-                    chains[foundChain].posArray.push(i);
+                    chains[foundChain].posArray.add(i);
                 }
             } else if (puyoMatcher.matchRight || puyoMatcher.matchDown) {
                 // A chain exists, but hasn't been created, so create a chain and store its position
                 chains.push(new PuyoChain());
                 foundChain = chains.length - 1;
-                chains[foundChain].posArray.push(i);
+                chains[foundChain].posArray.add(i);
                 chains[foundChain].type = puyos[i].puyo.type;
             }
             if (puyoMatcher.matchRight) {
-                chains[foundChain].posArray.push(i + 1);
+                chains[foundChain].posArray.add(i + 1);
             }
             if (puyoMatcher.matchDown) {
-                chains[foundChain].posArray.push((i + grid.x));
+                chains[foundChain].posArray.add((i + grid.x));
             }
         }
 
         // Chain Combination
-        chains = this.CombineChains(chains);
+        this.chains = this.RemoveShortChains(this.CombineChains(chains));
+    
+        // Blink then remove puyo chains of length > 4
+        this.chainInterupt = true;
 
-        //console.log(chains);
+        // Remove duplicates from chain in a non-optimal manner
+        //this.chains = [new Set(this.chains)];
+    }
 
-        // Remove puyo chains of length > 4
-        for (var i = 0; i < chains.length; i++) {
-            if (chains[i].posArray.length >= chainLength) {
+    PrepareChainDestroy() {
+        if (this.chainInterupt && this.chainDelay == this.frameCounter) {
+            this.DestroyChains();
+            this.chains = [];
+            this.chainInterupt = false;
+            this.frameCounter = 0;
+            return;
+        }
+        this.frameCounter++;
+        this.BlinkChains();
+    }
+
+    BlinkChains() {
+        for (var i = 0; i < this.chains.length; i++) { // Loops through each chain
+            for (let pos of this.chains[i].posArray.values()) { // Loops through each puyo
+                if (this.frameBlink == 0) {
+                    puyos[pos].puyo.drawable = !puyos[pos].puyo.drawable;
+                }
+            }
+        }
+        this.frameBlink++;
+        if (this.frameBlink > 5) this.frameBlink = 0;
+    }
+
+    DestroyChains() {
+        //console.log("REMOVING");
+        var removed = false; // True when at least one chain is removed
+        for (var i = 0; i < this.chains.length; i++) {
+            if (this.chains[i].posArray.size >= chainLength) {
                 removed = true;
-                for (var j = 0; j < chains[i].posArray.length; j++) {
-                    //console.log(puyos[chains[i].posArray[j]]);
-                    if (puyos[chains[i].posArray[j]].puyo != null) {
-                        puyos[chains[i].posArray[j]].puyo.drawable = false;
-                        puyos[chains[i].posArray[j]].puyo.RemoveFromCollisionMap(true);
+                for (var j of this.chains[i].posArray.values()) {
+                    //console.log(puyos[j]);
+                    if (puyos[j].puyo != null) {
+                        puyos[j].puyo.drawable = false;
+                        puyos[j].puyo.RemoveFromCollisionMap(true);
                     } else {
-                        if (chains[i].posArray[j] == (grid.x * (round(activePuyo.puyos[0].y / gridSize) - 1) + round(activePuyo.puyos[0].x / gridSize) - 1)) {
+                        if (j == (grid.x * (round(activePuyo.puyos[0].y / gridSize) - 1) + round(activePuyo.puyos[0].x / gridSize) - 1)) {
                             activePuyo.puyos[0] == null;
                         }
                     }
-                    puyos[chains[i].posArray[j]].puyo = null;
-                    puyos[chains[i].posArray[j]].default = true;
+                    puyos[j].puyo = null;
+                    puyos[j].default = true;
 
                     //console.log("REMOVING");
                 }
@@ -75,23 +113,23 @@ class ChainAnalyzer {
                 if (chains[a].type == chains[b].type) { // Type is the same, so check for overlap
                     //console.log("%c Match Possible", "color: orange; font-weight: bold; font-size: 1.2em");
                     var finished = false;
-                    for (var c = 0; c < chains[a].posArray.length; c++) {
-                        for (var d = 0; d < chains[b].posArray.length; d++) {
-                            if (chains[a].posArray[c] == chains[b].posArray[d]) { // The same puyo was found in both arrays, so combine them
+                    for (var c of chains[a].posArray.values()) {
+                        for (var d of chains[b].posArray.values()) {
+                            if (c == d) { // The same puyo was found in both arrays, so combine them
                                 //console.log("%c Match Found", "color: red; font-weight: bold; font-size: 1.2em");
                                 var newChain = new PuyoChain();
                                 newChain.type = chains[a].type;
-                                for (var i = 0; i < chains[a].posArray.length; i++) {
-                                    newChain.posArray.push(chains[a].posArray[i]);
+                                for (var i of chains[a].posArray.values()) {
+                                    newChain.posArray.add(i);
                                 }
-                                for (var i = 0; i < chains[b].posArray.length; i++) {
+                                for (var i of chains[b].posArray.values()) {
                                     var duplicate = false;
-                                    for (var z = 0; z < newChain.posArray.length; z++) {
-                                        if (newChain.posArray[z] != chains[b].posArray[i]) continue;
+                                    for (var z of newChain.posArray.values()) {
+                                        if (z != i) continue;
                                         duplicate = true;
                                         break;
                                     }
-                                    if (!duplicate) newChain.posArray.push(chains[b].posArray[i]);
+                                    if (!duplicate) newChain.posArray.add(i);
                                 }
 
                                 chains.push(newChain);
@@ -107,13 +145,23 @@ class ChainAnalyzer {
         return chains;
     }
 
+    RemoveShortChains(chains) {
+        var newChains = [];
+        for (var i = 0; i < chains.length; i++) {
+            //console.log(chains[i].posArray.size);
+            if (chains[i].posArray.size < chainLength) continue;
+            newChains.push(chains[i]);
+        }
+        return newChains;
+    }
+
     FindChain(chains, i) {
         if (chains.length != 0) {
             for (var x = 0; x < chains.length; x++) {
                 // Skip to the next chain if it is impossible for the puyo to be in this chain
                 if (chains[x].type != puyos[i].puyo.type || chains[x].posArray.length == 0) continue;
-                for (var y = 0; y < chains[x].posArray.length; y++) {
-                    if (chains[x].posArray[y] == i) {
+                for (var y of chains[x].posArray.values()) {
+                    if (y == i) {
                         // Puyo was found
                         return x;
                     }

@@ -1,3 +1,5 @@
+//// Each fallen puyo is stored inside a PuyoMap
+
 var puyos = [];
 
 class PuyoMap {
@@ -11,7 +13,7 @@ class PuyoMap {
 
 class PuyoChain {
     constructor() {
-        this.posArray = [];
+        this.posArray = new Set();
         this.type = -1;
     }
 }

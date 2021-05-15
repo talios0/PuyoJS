@@ -1,3 +1,5 @@
+//// Looks for matching neighbors
+
 class Matcher {
     constructor(puyo) {
         this.puyo = puyo; // Parent Puyo

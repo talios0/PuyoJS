@@ -1,3 +1,6 @@
+//// Each PuyoMap is stored inside an index of the collisionMap, making it easy
+//// to check for collisions
+
 var collisionMap = [];
 var collisionLength = 0;
 var collisionHeight = 0;
@@ -39,6 +42,16 @@ function addCollision(row, col, color) {
     else {
         collisionMap[row * collisionLength + col + 1] = color;
     }
+}
+
+function checkCollision(row, col) {
+    if (row < 0) return false;
+    if (collisionMap[row * collisionLength + col + 1] != -1) return true;
+    return false;
+}
+
+function gamePosToGridPos(puyo) {
+    return [round(puyo.x/gridSize), round(puyo.y/gridSize)];
 }
 
 function debugCollisions() {

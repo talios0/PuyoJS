@@ -4,7 +4,8 @@ class Puyo {
 
         // Position on grid (in terms of real units not grid units)
         this.x = round((grid.x / 2 - 1) * gridSize);
-        this.y = -gridSize;
+        this.y = 0;
+        // Stores the grid-based position
         this.host = true;
         if (host == 1) { // main puyo or not
             this.host = false;
@@ -52,7 +53,6 @@ class Puyo {
         this.Gravity();
         this.Collision();
         this.CollisionDelay();
-        //this.CheckSprite();
         this.Draw();
     }
 
@@ -66,24 +66,26 @@ class Puyo {
             rotate(this.rotation);
             fill(this.color);
             image(this.sprite, 0, 0, this.sizeX, this.sizeY);
-            //rect(0, 0, this.sizeX, this.sizeY);
             pop();
         }
     }
 
     Gravity() {
 
-        if (this.collision || this.inMap) return;
+        if (this.collision || this.inMap) {
+            return;
+        }
         if (!this.dropped && this.countdown) return;
         if (((!this.parent.puyos[1].dropped && this.parent.puyos[1].countdown) || (!this.parent.puyos[0].dropped && this.parent.puyos[0].countdown))) {
-            if (this.temp) console.log("stop");
             if (this.parent.rotation == 1 || this.parent.rotation == 3 || (this.parent.rotation == 0 && this.host) || (this.parent.rotation == 2 && !this.host)) return;
             if (this.host && this.parent.puyos[1].frameCounter > 0) return;
             else if (this.parent.puyos[0].frameCounter > 0) return;
         }
-        if (fastDrop && this.active && this.parent.status == 0) {      if (this.temp) console.log(this.y); this.y += (this.sizeY / 32) * speed * this.fastDropMultiplier; }
+        if (fastDrop && this.active && this.parent.status == 0) { this.y += (this.sizeY / 32) * speed * this.fastDropMultiplier; }
         else {
-        if (this.temp) console.log(this.y);this.y += (this.sizeY / 32) * speed; }
+        this.y += (this.sizeY / 32) * speed; 
+        }
+    
     }
 
     CheckSprite() {
@@ -91,7 +93,7 @@ class Puyo {
         if (!this.dropped) {
             if (this.host) {
                 var otherPuyo = this.parent.puyos[1];
-                if (otherPuyo.color != this.color) {
+                if ((otherPuyo.color != this.color) || (otherPuyo.inMap && !this.inMap)) {
                     this.sprite = puyoSpriteSheet.get(0, puyoSize*this.color, puyoSize, puyoSize);
                     return;
                 }
@@ -112,7 +114,7 @@ class Puyo {
             }
             else {
                 var otherPuyo = this.parent.puyos[0];
-                if (otherPuyo.color != this.color) {
+                if ((otherPuyo.color != this.color) || (otherPuyo.inMap && !this.inMap)) {
                     this.sprite = puyoSpriteSheet.get(0, puyoSize*this.color, puyoSize, puyoSize);
                     return;
                 }
@@ -204,10 +206,12 @@ class Puyo {
         }
     }
 
-
     Collision() {
         if (collisionMap[collisionLength * (round(this.y / gridSize)) + (round(this.x / gridSize) + 1)] > -1) {
-            if (!this.dropped || !this.countdown) { this.countdown = true; return; }
+            if (!this.dropped || !this.countdown) { 
+                this.countdown = true; return; 
+            }
+            if (this.collision) return;
             this.collision = true;
             this.AddToCollisionMap();
         } else {
@@ -240,13 +244,19 @@ class Puyo {
             var x = round(this.x / gridSize + 1) - 1;
             var y = round(this.y / gridSize) - 1;
             addCollision(y, x, this.color);
-            //collisionMap[(round(this.y / gridSize) - 1) * collisionLength + (round(this.x / gridSize) + 1)] = this.color;
+        
             // Add to puyomap as a puyomap
             puyos[grid.x * y + x] = new PuyoMap(round(this.x / gridSize), round(this.y / gridSize), this);
             this.posInPuyos = grid.x * y + x;
             puyos[this.posInPuyos].puyo = this;
             this.inMap = true;
-            //console.log("Added " + this.color + " on COL: " + x + " ROW: " + y);
+
+            // Make sure puyo is aligned in grid
+            this.y = round((y+0.5) * gridSize);
+
+            for (var i = 0; i < this.parent.puyos.length; i++) {
+                this.parent.puyos[i].CheckSprite();            
+            }
         }
     }
 
